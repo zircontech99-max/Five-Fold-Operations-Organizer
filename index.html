@@ -130,7 +130,7 @@ function groups(s){
   const out=[];
   for(const t of['in','out']){
     const l=ofType(s,t);
-    for(let i=0;i<l.length;i+=5){const g=l.slice(i,i+5);out.push({t,n:i/5+1,start:i,items:g,sum:total(g),name:`مجمعة ${i/5+1} (${TL[t]})`})}
+    for(let i=0;i<l.length;i+=5){const g=l.slice(i,i+5);out.push({t,n:i/5+1,start:i,items:g,sum:total(g),name:`مجموعة ${i/5+1} (${TL[t]})`})}
   }
   return out;
 }
