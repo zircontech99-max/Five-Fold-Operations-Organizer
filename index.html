@@ -289,11 +289,11 @@ async function exportXlsx(){
   ['in','out'].forEach(t=>{
     const col=ccol[t];let r=HR;ws.getColumn(col).width=28;const L=ws.getColumn(col).letter;
     gs.filter(g=>g.t===t).forEach(g=>{
-      const h=ws.getCell(r,col);h.value=g.name;h.font={bold:true,size:12,color:{argb:'FFFFFFFF'}};h.fill=fill(clr[t][0]);h.alignment={horizontal:'center',vertical:'middle'};h.border=box;
-      g.items.forEach((x,k)=>{const c=ws.getCell(r+1+k,col);c.value=x.amt/100;c.numFmt=nf(x.amt);c.alignment={horizontal:'center'};c.border=box});
+      const h=ws.getCell(r,col);h.value=g.name.replace(/(\d+)/,'\u200E$1');h.font={bold:true,size:12,color:{argb:'FFFFFFFF'}};h.fill=fill(clr[t][0]);h.alignment={horizontal:'center',vertical:'middle'};h.border=box;
+      g.items.forEach((x,k)=>{const c=ws.getCell(r+1+k,col);c.value=x.amt/100;c.numFmt=nf(x.amt);c.alignment={horizontal:'center',readingOrder:'rtl'};c.border=box});
       const tr=r+1+g.items.length,c=ws.getCell(tr,col);
-      c.value={formula:`SUM(${L}${r+1}:${L}${tr-1})`,result:g.sum/100};c.numFmt='"المجموع = "'+nf(g.sum);
-      c.font={bold:true};c.fill=fill(clr[t][1]);c.border=box;c.alignment={horizontal:'center'};
+      c.value={formula:`SUM(${L}${r+1}:${L}${tr-1})`,result:g.sum/100};c.numFmt='"المجموع = \u200E"'+nf(g.sum);
+      c.font={bold:true};c.fill=fill(clr[t][1]);c.border=box;c.alignment={horizontal:'center',readingOrder:'rtl'};
       tot[t].push(`${L}${tr}`);sums[t]+=g.sum;r=tr+2;
     });
   });
@@ -301,7 +301,7 @@ async function exportXlsx(){
   [['in','إجمالي التحصيلات'],['out','إجمالي المصروفات']].forEach(([t,lbl],i)=>{
     ws.mergeCells(i+1,1,i+1,3);const c=ws.getCell(i+1,1);
     c.value=tot[t].length?{formula:tot[t].join('+'),result:sums[t]/100}:0;
-    c.numFmt='"'+lbl+' = "'+nf(sums[t]);c.font={bold:true,size:13,color:{argb:clr[t][0]}};c.fill=fill(clr[t][1]);c.alignment={horizontal:'center',vertical:'middle'};c.border=box;ws.getRow(i+1).height=24;
+    c.numFmt='"'+lbl+' = \u200E"'+nf(sums[t]);c.font={bold:true,size:13,color:{argb:clr[t][0]}};c.fill=fill(clr[t][1]);c.alignment={horizontal:'center',vertical:'middle',readingOrder:'rtl'};c.border=box;ws.getRow(i+1).height=24;
   });
   const buf=await wb.xlsx.writeBuffer(),name='التحصيلات-والمصروفات.xlsx';
   try{
